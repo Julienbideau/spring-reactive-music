@@ -1,8 +1,7 @@
 package fr.asys.demoflux.controller;
 
-import fr.asys.demoflux.dto.MusicDto;
-import fr.asys.demoflux.model.Music;
-import fr.asys.demoflux.service.MusicService;
+import java.util.Comparator;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,11 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.ParallelFlux;
-
-import java.util.Comparator;
+import fr.asys.demoflux.dto.MusicDto;
+import fr.asys.demoflux.model.Music;
+import fr.asys.demoflux.service.MusicService;
 
 @RestController
 @RequestMapping("/music")
@@ -25,7 +26,6 @@ public class MusicAsyncRestController {
     public MusicAsyncRestController(MusicService musicService) {
         this.musicService = musicService;
     }
-
 
     @GetMapping("{singer}")
     public Mono<MusicDto> findOneBySingerName(@PathVariable("singer") String singerName) {
@@ -40,14 +40,12 @@ public class MusicAsyncRestController {
 
     @DeleteMapping("{title}")
     public Mono<ResponseEntity<Void>> deleteByTitle(@PathVariable("title") String title) {
-        return musicService.delete(title).map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        return musicService.delete(title).map(ResponseEntity::ok).defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/mono/{singer}")
     public Mono<ResponseEntity<MusicDto>> findResponseEntityOneBySingerName(@PathVariable("singer") String singerName) {
-        return musicService.findOneBySingerName(singerName)
-                .map(ResponseEntity::ok)
+        return musicService.findOneBySingerName(singerName).map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 

@@ -1,10 +1,11 @@
 package fr.asys.demoflux.service;
 
-import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-
 import java.time.Duration;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import reactor.core.publisher.Flux;
 
 public class PresentationFluxTest {
 
@@ -36,17 +37,15 @@ public class PresentationFluxTest {
     // DO TAKE with interval
     @Test
     void testTake() throws InterruptedException {
-        Flux.interval(Duration.ofSeconds(1))
-                .take(2)
-                .log().subscribe();
+        Flux.interval(Duration.ofSeconds(1)).take(2).log().subscribe();
         Thread.sleep(5000l);
     }
 
     // DO BACKPRESSURE
     @Test
     void testBackPressure() throws InterruptedException {
-        Flux.interval(Duration.ofSeconds(1))
-                .log().subscribe(null, null, null, subscription -> subscription.request(2l));
+        Flux.interval(Duration.ofSeconds(1)).log().subscribe(null, null, null,
+                subscription -> subscription.request(2l));
         Thread.sleep(5000l);
     }
 

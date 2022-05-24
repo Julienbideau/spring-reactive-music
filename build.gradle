@@ -2,6 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.6.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'org.openapi.generator' version '5.3.0'
+    id 'de.undercouch.download' version '5.1.0'
 }
 
 group = 'fr.asys'
@@ -17,8 +19,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     compileOnly 'org.springframework.boot:spring-boot-devtools'
     // OPEN API
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.6'
-
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.8'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'io.r2dbc:r2dbc-h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -27,4 +29,42 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+task updateOpenApiSpec {
+    doLast {
+        download.run {
+            src 'http://localhost:8080/v3/api-docs.yaml'
+            dest 'specs/api-docs.yaml'
+        }
+    }
+}
+
+openApiGenerate {
+    id = "jug-flux-core-client-java"
+    generatorName = "java"
+    inputSpec = "$rootDir/specs/api-docs.yaml".toString()
+    outputDir = "$buildDir/../../../jug-flux-core-client-java/app/".toString()
+    validateSpec = true
+    apiPackage = "fr.asys.demoflux.core.client.controllers"
+    invokerPackage = "fr.asys.demoflux.core.client.invoker"
+    modelPackage = "fr.asys.demoflux.core.client.model"
+    configOptions = [
+            dateLibrary: "java8-localdatetime",
+            library    : "native",
+            reactive   : "true"
+    ]
+}
+tasks.getByName('openApiGenerate').dependsOn(tasks.updateOpenApiSpec)
+
+task generateTypescriptClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "typescript-angular"
+    inputSpec = "$rootDir/specs/api-docs.yaml".toString()
+    outputDir = "$buildDir/../../../jug-flux-core-client-typescript/app/".toString()
+    validateSpec = true
+    configOptions = [
+            npmName   : "@jug/jug-flux-core-client-typescript",
+            npmVersion: "0.0.0",
+            ngVersion : "13.0.1"
+    ]
 }

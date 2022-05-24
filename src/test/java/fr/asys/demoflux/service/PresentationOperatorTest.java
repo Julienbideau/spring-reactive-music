@@ -1,9 +1,10 @@
 package fr.asys.demoflux.service;
 
-import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-
 import java.time.Duration;
+
+import org.junit.jupiter.api.Test;
+
+import reactor.core.publisher.Flux;
 
 public class PresentationOperatorTest {
 
@@ -21,10 +22,8 @@ public class PresentationOperatorTest {
 
     @Test
     void concatTest() throws InterruptedException {
-        Flux<Integer> oneToFive = Flux.range(1, 5)
-                .delayElements(Duration.ofMillis(200));
-        Flux<Integer> sixToTen = Flux.range(6, 5)
-                .delayElements(Duration.ofMillis(400));
+        Flux<Integer> oneToFive = Flux.range(1, 5).delayElements(Duration.ofMillis(200));
+        Flux<Integer> sixToTen = Flux.range(6, 5).delayElements(Duration.ofMillis(400));
 
         Flux.concat(oneToFive, sixToTen);
 
@@ -34,10 +33,8 @@ public class PresentationOperatorTest {
 
     @Test
     void mergeTest() throws InterruptedException {
-        Flux<Integer> oneToFive = Flux.range(1, 5)
-                .delayElements(Duration.ofMillis(200));
-        Flux<Integer> sixToTen = Flux.range(6, 5)
-                .delayElements(Duration.ofMillis(400));
+        Flux<Integer> oneToFive = Flux.range(1, 5).delayElements(Duration.ofMillis(200));
+        Flux<Integer> sixToTen = Flux.range(6, 5).delayElements(Duration.ofMillis(400));
         Flux.merge(oneToFive, sixToTen);
 
         Thread.sleep(4000);
